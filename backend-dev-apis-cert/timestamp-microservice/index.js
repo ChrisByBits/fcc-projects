@@ -11,9 +11,11 @@ app.get("/", function (req, res) {
 });
 
 app.get("/api/:date?", (req, res) => {
-  let date = req.params.date;
-
-  if (!date.includes("-")) date = parseInt(date);
+  let date = req.params.date || new Date();
+    
+  if (!(date instanceof Date) && !date.includes("-")) {
+    date = parseInt(date);
+  }
 
   let unix = new Date(date).getTime();
   let utc = new Date(date).toUTCString();
