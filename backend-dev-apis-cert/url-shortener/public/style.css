@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+* {
+  margin: 0;
+  top: 0;
+  padding: 0;
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  background: rgb(38,89,175);
+  background: radial-gradient(circle, rgba(39,70,122,1) 0%, rgba(29,55,84,1) 32%, rgba(17,40,54,1) 52%, rgba(12,21,34,1) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.cursor-tracker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #008cff, 0 0 40px #008cff, 0 0 50px #008cff, 0 0 60px #008cff, 0 0 70px #008cff;
+  animation: pulse 1.5s ease-in-out infinite alternate;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+.cursor-trail .motion-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background-color: #295ac2;
+  mix-blend-mode: color-dodge;
+  animation: burn 2s linear;
+  z-index: 1;
+}
+
+@keyframes burn {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(30);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0.3;
+  }
+}
+
+h1 {
+  text-align: center;
+  font-size: 4rem;
+  margin: 0 15px;
+}
+
+main, section {
+  min-width: 100%;
+}
+
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  max-width: 800px;
+  width: 65%;
+  height: 120px;
+  border: 2px solid white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 200%;
+  gap: 15px;
+}
+
+input {
+  color: #030c20;
+  min-height: 55px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type="text"] {
+  width: 60%;
+}
+input[type="submit"] {
+  width: 25%;
+  text-align: center;
+}
+
+body > *:not(.cursor-tracker):not(.cursor-trail) {
+  z-index: 2;
+}
+
+p {
+  font-size: 20px;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>URL Shortener Microservice</title>
+    <link href="/public/style.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    
+    <h1>URL Shortener Microservice</h1>
+    <main>
+      <section>
+        <form action="api/shorturl" method="POST">
+          <label for="url_input">URL:</label>
+          <input id="url_input" type="text" name="url" placeholder="https://google.com" />
+          <input id="submit" type="submit" value="POST" />
+        </form>
+      </section>
+    </main>
+    <div class="cursor-tracker"></div>
+    <div class="cursor-trail"></div>
+    <footer>
+      <p>By Christopher Lecca</p>
+    </footer>
+    <script src="/public/cursor.js"></script>
+  </body>
+</html>
