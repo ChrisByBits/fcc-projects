@@ -9,8 +9,8 @@ const bodyParser = require("body-parser");
 mongoose.connect(process.env["DB_URL"]);
 
 const urlSchema = new mongoose.Schema({
-  original: { type: String, required: true },
-  short: { type: Number, required: true },
+  original_url: { type: String, unique: true, required: true },
+  short_url: { type: Number, unique: true, required: true },
 });
 const Url = mongoose.model("urls", urlSchema);
 
@@ -26,30 +26,37 @@ app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
-app.post("/api/shorturl", async (req, res) => {
+app.post("/api/shorturl", async(req, res) => {
+  try {
+  const urlRegex = new RegExp('^(https?:\\/\\/)?'+
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+
+    '(\\#[-a-z\\d_]*)?$','i');
+  
   const originalUrl = req.body.url;
-  try {
-    new URL(originalUrl);
-  } catch {
-    return res.json({ error: "invalid url" });
-  }
 
-  try {
-    let existingUrl = await Url.findOne({ original: originalUrl });
+  if(!urlRegex.test(originalUrl))
+     return res.json({ error: "invalid url" });
+  
+  let existingUrl = await Url.findOne({ original_url: originalUrl });
 
-    if (existingUrl) 
-      return res.json({ original: existingUrl.original, short: existingUrl.short });
+  if (existingUrl) 
+    return res.json({ original_url: existingUrl.original_url, short_url: existingUrl.short_url });
+    
+  const lastUrl = await Url.findOne({}).sort({ short_url: -1 });
+  const shortUrl = lastUrl ? parseInt(lastUrl.short_url) + 1 : 1;
+  
+  const newUrl = new Url({
+    original_url: originalUrl,
+    short_url: shortUrl,
+  });
+  const savedUrl = await newUrl.save();
 
-    const lastUrl = await Url.findOne({}).sort({ short: -1 });
-    const shortUrl = lastUrl ? lastUrl.short + 1 : 1;
-    const newUrl = new Url({
-      original: originalUrl,
-      short: shortUrl,
-    });
-    const savedUrl = await newUrl.save();
-    res.json({original: savedUrl.original, short: savedUrl.short});
-  } catch (err) {
-    console.error(err);
+  res.json({original_url: savedUrl.original_url, short_url: savedUrl.short_url});
+  } catch (error) {
+    console.error("Error handling short URL creation:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -57,10 +64,10 @@ app.post("/api/shorturl", async (req, res) => {
 app.get("/api/shorturl/:short", async (req, res) => {
   const shortUrl = req.params.short;
   try {
-    const url = await Url.findOne({ short: shortUrl });
+    const url = await Url.findOne({ short_url: shortUrl });
     if (!url) 
       return res.status(404).json({ error: "No short URL found for the given input" });
-    res.redirect(url.original);
+    res.redirect(url.original_url);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal server error" });
