@@ -76,6 +76,16 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
   }
 });
 
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+})
+
 app.get("/api/users/:_id/logs", async (req, res) => {
   try {
     const userId = req.params._id;
