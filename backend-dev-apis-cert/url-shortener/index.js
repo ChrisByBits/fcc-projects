@@ -38,7 +38,7 @@ app.post("/api/shorturl", async(req, res) => {
   const originalUrl = req.body.url;
 
   if(!urlRegex.test(originalUrl))
-     return res.json({ error: "invalid url" });
+    return res.json({ error: "invalid url" });
   
   let existingUrl = await Url.findOne({ original_url: originalUrl });
 
